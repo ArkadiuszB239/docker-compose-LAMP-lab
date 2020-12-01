@@ -1,0 +1,44 @@
+version: '3'
+services: 
+  php-apache:
+    container_name: php-apache
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    ports: 
+      - 80:80
+    volumes: 
+      - ./DocumentRoot:/var/www/html
+    links:
+      - 'mysqlserver'
+    networks: 
+      - 'backend'
+  mysqlserver:
+    container_name: mysqlserver
+    image: mariadb:10.1
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks: 
+      - 'backend'
+    environment:
+      TZ: "Europe/Warsaw"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+      MYSQL_ROOT_PASSWORD: "rootpwd"
+      MYSQL_USER: 'testuser'
+      MYSQL_PASSWORD: 'testpassword'
+      MYSQL_DATABASE: 'testdb'
+  apache:
+    container_name: apache
+    image: httpd:2.4-alpine
+    networks: 
+      - 'backend'
+      - 'frontend'
+    ports: 
+      - 6666:80
+    volumes: 
+      - ./DocumentRoot:/usr/local/apache2/htdocs/
+volumes: 
+  mariadb:
+networks:
+  backend:
+  frontend:
