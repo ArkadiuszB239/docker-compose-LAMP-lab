@@ -1,14 +1,13 @@
 # docker-compose-LAMP-lab
 
 
-Application shows phpinfo function. Server is running on docker container.
+Aplikacja wyświetlająca jednolinijkowy skrypt php: <>php phpinfo(); ?>
+Ze względu na użycie linkowania kontener z bazą danych mysql startuje jako pierwszy, dopiero w momencie sygnału o starcie uruchomiony zostaje kontener php.
 
-To start application simply clone this repository to directory on your computer.
+Do połączenia katalogu DocumentRoot przechowujący skrypt z katalogiem wewnetrznym kontenera został zamontowany volumen typu bind.
+Kontener php został wystawiony pod adresem: localhost:80
+Natomiast kontener httpd pod adresem: localhost:6666
 
-Then in project directory run command: docker-compose up -d
+Wszystkie kontenery zostały podłączone do utworzonej sieci "backend"
+Kontener httpd dodatkowo został podłączony do sieci "frontend"
 
-To show phpinfo in your browser go to:
-
-http://localhost:80
-
-Httpd apache serwer is published on port 6666
