@@ -4,9 +4,8 @@ services:
     container_name: php-apache
     build: 
       context: ./
-      dockerfile: Dockerfile
-    ports: 
-      - 80:80
+      dockerfile: php.Dockerfile
+    restart: always
     volumes: 
       - ./DocumentRoot:/var/www/html
     links:
@@ -15,30 +14,34 @@ services:
       - 'backend'
   mysqlserver:
     container_name: mysqlserver
-    image: mariadb:10.1
+    build: 
+      context: ./
+      dockerfile: mysql.Dockerfile
+    restart: always
     volumes:
-      - mariadb:/var/lib/mysql
+      - database:/var/lib/mysql
     networks: 
       - 'backend'
     environment:
       TZ: "Europe/Warsaw"
-      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
-      MYSQL_ROOT_PASSWORD: "rootpwd"
-      MYSQL_USER: 'testuser'
-      MYSQL_PASSWORD: 'testpassword'
-      MYSQL_DATABASE: 'testdb'
   apache:
     container_name: apache
-    image: httpd:2.4-alpine
+    build:
+      context: ./
+      dockerfile: apacheHttpd.Dockerfile
+    restart: always
     networks: 
       - 'backend'
-      - 'frontend'
+      - 'frontend'  
+    depends_on: 
+      - php-apache
+      - mysqlserver
     ports: 
-      - 6666:80
+      - 80:80
     volumes: 
       - ./DocumentRoot:/usr/local/apache2/htdocs/
 volumes: 
-  mariadb:
+  database:
 networks:
   backend:
   frontend:
