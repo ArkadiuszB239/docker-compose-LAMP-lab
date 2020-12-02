@@ -37,7 +37,7 @@ services:
       - php-apache
       - mysqlserver
     ports: 
-      - 80:80
+      - 6666:80
     volumes: 
       - ./DocumentRoot:/usr/local/apache2/htdocs/
 volumes: 
