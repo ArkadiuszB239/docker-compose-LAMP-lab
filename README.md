@@ -18,3 +18,17 @@ Przekierowanie zostało ustawione w pliku apache.cnf na samym dole pliku
 
 Wszystkie kontenery zostały podłączone do utworzonej sieci "backend"
 Kontener httpd dodatkowo został podłączony do sieci "frontend"
+
+
+# Jak uruchomić na klastrze swarm?
+
+Należy wykonać klon repozytorium, następnie przejść do katalogu z projektem.
+
+W pierwszej kolejności inicjalizujemy klaster swarm:
+docker swarm init
+
+Po czym wykonujemy polecenie
+docker stack deploy --compose-file docker-stack.yml lamp
+
+Do wyświetlenia rezultatu korzystamy z komendy:
+docker service ls
