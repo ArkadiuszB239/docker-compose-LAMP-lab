@@ -1,0 +1,53 @@
+version: '3'
+services: 
+  php-apache:
+    image: php:7.3-rc-fpm-alpine
+    volumes: 
+      - ./DocumentRoot:/var/www/html
+    depends_on:
+      - 'mysqlserver'
+    networks: 
+      - 'backend'
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+  mysqlserver:
+    image: mysql
+    volumes:
+      - database:/var/lib/mysql
+    networks: 
+      - 'backend'
+    environment:
+      TZ: "Europe/Warsaw"
+      MYSQL_ROOT_PASSWORD: rootpasswd
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+  apache:
+    image: httpd:2.4-alpine
+    networks: 
+      - 'backend'
+      - 'frontend'  
+    depends_on: 
+      - php-apache
+      - mysqlserver
+    ports: 
+      - 80:80
+    volumes: 
+      - ./DocumentRoot:/usr/local/apache2/htdocs/
+      - ./apache.cnf:/usr/local/apache2/conf/httpd.conf
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
+volumes: 
+  database:
+networks:
+  backend:
+  frontend:
